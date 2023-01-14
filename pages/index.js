@@ -1,11 +1,24 @@
 import Head from 'next/head'
+import {useRef,useState} from 'react'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
+// import styles from '@/styles/Home.module.css'
+import Navbar from '@/components/Navbar'
+import Card from '@/components/Card'
+import { getAllEvents } from '@/data'
+import { useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
 
+
+const months= ['january', 'february','march','april','may', 'june','july','august','september','october', 'november','december']
+
 export default function Home() {
+
+const data =useRouter();
+  const formref= useRef();
+const [month,setMonth]=useState(2021);
+const [year,setYear]=useState(4);
   return (
     <>
       <Head>
@@ -14,109 +27,79 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.js</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
+      <main className="w-screen bg-slate-200 h-screen">
+      
+            <div className="w-full pt-10 flex items-center justify-center flex-col gap-4">
+              <form id="filter" ref={formref} className="flex gap-4 flex-row w-3/5 items-center justify-center" >  
+              <div className="bg-white  w-52
+                  flex  items-center justify-center
+              gap-4
+               rounded-lg text-xl"><label className="text-blue-500" >select year</label>
+                <select className="w-20 flex flex-col justify-center text-center">
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023">2023</option>
+                  <option value="2024">2024</option>
+                </select>
+              </div>
+              <div className="bg-white  w-52
+                  flex  items-center justify-center
+              gap-4
+               rounded-lg text-xl">
+              <select>
+                {
+                  months.map((item,idx)=>{
+                    return(
+                      <option value={idx}>{item}</option>
+                    )
+                  })
+                }
+              </select>
+         </div>
+            
+ 
+              </form>
+              <button 
+              
+              
+              className="px-4 py-2 rounded-xl w-32 bg-yellow-200 text-black"
+          
+          
+           onClick={()=>{
+            
+            setYear(formref.current[0].value);
+            setMonth(formref.current[1].value);
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
+              const date=new Date('2022-12-30');
+              console.log(date.getMonth());
+              data.push(`/filter/${year}/${month}`)
+            
+            console.log(formref.current[0].value,formref.current[1].value)}} >check</button>
+            </div>
 
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
 
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
+                    <div id="layout" className="mt-6 flex flex-col items-center gap-4" >
+                 {
+                  getAllEvents().map((item)=>{
+                        return (
+                          <Card  date={item.date} 
+                          description={item.description} 
+                          id={item.id}
+                          image={item.image}
+                          location={item.location}
+                          title={item.title}
+                            
+                          />
+                        )
 
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+
+                  })
+                 }
+
+                    </div>
+        
       </main>
     </>
   )
